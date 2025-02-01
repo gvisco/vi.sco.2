@@ -40,22 +40,6 @@ def load_json_file(filename: str):
 ALLOWED_USERS = load_json_file("allowed_users.json")
 CONFIG = load_json_file("private.json")
 
-# # Define a few command handlers. These usually take the two arguments update and
-# # context.
-# async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-#     """Send a message when the command /start is issued."""
-#     user = update.effective_user
-#     await update.message.reply_html(
-#         rf"Hi {user.mention_html()}!",
-#         reply_markup=ForceReply(selective=True),
-#     )
-
-
-# async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-#     """Send a message when the command /help is issued."""
-#     await update.message.reply_text("I am Vito, how can I help you today?")
-
-
 def load_chat_memory(user_id: int, username: str) -> dict:
     """Load or create chat memory for a user."""
     # Ensure data directory exists
@@ -104,13 +88,16 @@ async def on_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         {"from": "user", "text": update.message.text}
     )
     
+    # TODO: generate reply
+    reply = update.message.text
+
     # Send reply
-    await update.message.reply_text(update.message.text)
+    await update.message.reply_text(reply)
     
     # Add bot response to history and save
     memory["messages"] = update_message_history(
         memory["messages"],
-        {"from": "bot", "text": update.message.text}
+        {"from": "bot", "text": reply}
     )
     save_chat_memory(user_id, memory)
 
@@ -136,8 +123,6 @@ def main() -> None:
     application = Application.builder().token(CONFIG['telegram_token']).build()
 
     # on different commands - answer in Telegram
-    # application.add_handler(CommandHandler("start", start))
-    # application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("clear", clear_data))
 
     # on non command i.e message - echo the message on Telegram
