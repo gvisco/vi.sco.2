@@ -172,3 +172,11 @@ cython_debug/
 
 # Private config
 private.json
+allowed_users.json
+
+# VSC
+.vscode/
+
+# Bot data
+data/
+data/*
